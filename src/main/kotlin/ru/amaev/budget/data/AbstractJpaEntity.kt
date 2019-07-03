@@ -31,13 +31,9 @@ abstract class AbstractJpaEntity<T> {
 
     override fun equals(other: Any?): Boolean {
         other ?: return false
-
         if (this === other) return true
-
         if (javaClass != ProxyUtils.getUserClass(other)) return false
-
         other as AbstractJpaEntity<*>
-
         return if (null == this.getId()) false else this.getId() == other.getId()
     }
 
