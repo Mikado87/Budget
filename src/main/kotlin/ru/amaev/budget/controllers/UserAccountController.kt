@@ -17,34 +17,18 @@ class UserAccountController {
     @Autowired
     lateinit var userRepository: UserAccountRepository
 
-    private var nextIndex = 4L
-//    var userAccountMap = mutableMapOf(1L to UserAccount(1L, "Иванов", "Николай", "Петрович", false),
-//            2L to UserAccount(2L, "Петров", "Геннадий", "Юсупович", false),
-//            3L to UserAccount(3L, "Жуков", "Георгий", "Нассонович", true))
-
-
-    fun getTemp(): Iterable<UserAccount> {
-        return userRepository.findAll()
-    }
-
+    // TODO Disable after start
     @GetMapping
     fun getAllUsers(): Iterable<UserAccount> {
         return userRepository.findAll()
     }
 
-
     @GetMapping("get/{id}")
-    fun getUser(@PathVariable id: String): UserAccount {
-
-
-        return  userRepository.findByIdOrNull(id.toLong()) ?: throw DataNotFound()
-    }
+    fun getUser(@PathVariable id: String): UserAccount = userRepository.findByIdOrNull(id.toLong())
+            ?: throw DataNotFound()
 
     @PutMapping("add")
     fun addUser(@RequestBody user: UserAccount) {
-        println("request = [${user}]")
-
-
         userRepository.save(user)
     }
 
@@ -55,11 +39,14 @@ class UserAccountController {
         userRepository.save(userAccount)
     }
 
-    @PatchMapping("update/")
-    fun updateUserAccount(@RequestParam id: String,
-                          @PathVariable firstName: String,
-                          @PathVariable middleName: String,
-                          @PathVariable lastName: String,
-                          @PathVariable archived: Boolean) {
+    @PatchMapping("update")
+    fun updateUserAccount(@RequestBody user: UserAccount) {
+        if (user.getId() != null) {
+            val userAccount = userRepository.findByIdOrNull(user.getId()!!.toLong()) ?: throw DataNotFound()
+            if (user.firstName != null) userAccount.firstName = user.firstName
+            if (user.lastName != null) userAccount.lastName = user.lastName
+            if (user.middleName != null) userAccount.middleName = user.middleName
+            userRepository.save(userAccount)
+        } else throw DataNotFound()
     }
 }

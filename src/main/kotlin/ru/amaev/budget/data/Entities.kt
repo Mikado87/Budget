@@ -7,33 +7,33 @@ import javax.persistence.*
 
 
 @Entity
-class Account @JsonCreator constructor(@ManyToOne(fetch = FetchType.LAZY)
-                                       @JoinColumn(name = "created_by") val userAccount: UserAccount,
+data class Account @JsonCreator constructor(@ManyToOne(fetch = FetchType.LAZY)
+                                            @JoinColumn(name = "created_by") var userAccount: UserAccount?,
 //                                       @ManyToMany(fetch = FetchType.LAZY)
 //                                       @JoinTable(name = "user_account", joinColumns = arrayOf(JoinColumn(name = "shared_for")))
 //                                       val sharedFor: List<UserAccount>,
-                                       @ManyToOne
-                                       @JoinColumn(name = "currency_id") val currency: Currency)
+                                            @ManyToOne
+                                            @JoinColumn(name = "currency_id") var currency: Currency?)
     : AbstractJpaEntity<Long>(), Serializable
 
 @Entity
-class Category @JsonCreator constructor(@Column(name = "category_name") val categoryName: String)
+data class Category @JsonCreator constructor(@Column(name = "category_name") var categoryName: String?)
     : AbstractJpaEntity<Long>(), Serializable
 
 @Entity
-class Currency @JsonCreator constructor(@Column(name = "currency_name") val currencyName: String)
+data class Currency @JsonCreator constructor(@Column(name = "currency_name") var currencyName: String?)
     : AbstractJpaEntity<Long>(), Serializable
 
 @Entity
-class Transaction @JsonCreator constructor(@Column(name = "amount") val amount: BigDecimal,
-                                           @ManyToOne(fetch = FetchType.LAZY)
-                                           @JoinColumn(name = "account_id") val account: Account,
-                                           @ManyToOne(fetch = FetchType.EAGER)
-                                           @JoinColumn(name = "user_account_id") val userAccount: UserAccount)
+data class Transaction @JsonCreator constructor(@Column(name = "amount") var amount: BigDecimal?,
+                                                @ManyToOne(fetch = FetchType.LAZY)
+                                                @JoinColumn(name = "account_id") var account: Account?,
+                                                @ManyToOne(fetch = FetchType.EAGER)
+                                                @JoinColumn(name = "user_account_id") var userAccount: UserAccount?)
     : AbstractJpaEntity<Long>(), Serializable
 
 @Entity
-class UserAccount @JsonCreator constructor(@Column(name = "first_name") val firstName: String,
-                                           @Column(name = "last_name") val lastName: String,
-                                           @Column(name = "middle_name") val middleName: String)
+class UserAccount @JsonCreator constructor(@Column(name = "first_name") var firstName: String?,
+                                           @Column(name = "last_name") var lastName: String?,
+                                           @Column(name = "middle_name") var middleName: String?)
     : AbstractJpaEntity<Long>(), Serializable
