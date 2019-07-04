@@ -6,6 +6,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.*
 import ru.amaev.budget.data.Category
 import ru.amaev.budget.errors.DataNotFound
+import ru.amaev.budget.errors.IncorrectRequest
 import ru.amaev.budget.repositories.CategoryRepository
 
 
@@ -29,6 +30,7 @@ class CategoryAccountController {
 
     @PutMapping("add")
     fun addCategory(@RequestBody category: Category) {
+        if (category.type == null) throw IncorrectRequest()
         categoryRepository.save(category)
     }
 
@@ -44,6 +46,7 @@ class CategoryAccountController {
         if (category.getId() != null) {
             val categoryFromDB = categoryRepository.findByIdOrNull(category.getId()!!.toLong()) ?: throw DataNotFound()
             if (category.categoryName != null) categoryFromDB.categoryName = category.categoryName
+            if (category.type != null) categoryFromDB.type = category.type
             categoryRepository.save(categoryFromDB)
         } else throw DataNotFound()
     }

@@ -4,31 +4,33 @@ import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.*
-import ru.amaev.budget.data.UserAccount
+import ru.amaev.budget.data.Role
+import ru.amaev.budget.data.User
 import ru.amaev.budget.errors.DataNotFound
-import ru.amaev.budget.repositories.UserAccountRepository
+import ru.amaev.budget.repositories.UserRepository
 
 
 @RestController
 @Api
 @RequestMapping("/users")
-class UserAccountController {
+class UserController {
 
     @Autowired
-    lateinit var userRepository: UserAccountRepository
+    lateinit var userRepository: UserRepository
 
     // TODO Disable after start
     @GetMapping
-    fun getAllUsers(): Iterable<UserAccount> {
+    fun getAllUsers(): Iterable<User> {
         return userRepository.findAll()
     }
 
     @GetMapping("get/{id}")
-    fun getUser(@PathVariable id: String): UserAccount = userRepository.findByIdOrNull(id.toLong())
+    fun getUser(@PathVariable id: String): User = userRepository.findByIdOrNull(id.toLong())
             ?: throw DataNotFound()
 
     @PutMapping("add")
-    fun addUser(@RequestBody user: UserAccount) {
+    fun addUser(@RequestBody user: User) {
+        if (user.role == null) user.role = Role.USER
         userRepository.save(user)
     }
 
@@ -40,12 +42,13 @@ class UserAccountController {
     }
 
     @PatchMapping("update")
-    fun updateUserAccount(@RequestBody user: UserAccount) {
+    fun updateUser(@RequestBody user: User) {
         if (user.getId() != null) {
             val userAccount = userRepository.findByIdOrNull(user.getId()!!.toLong()) ?: throw DataNotFound()
             if (user.firstName != null) userAccount.firstName = user.firstName
             if (user.lastName != null) userAccount.lastName = user.lastName
             if (user.middleName != null) userAccount.middleName = user.middleName
+            if (user.role != null) userAccount.role = user.role
             userRepository.save(userAccount)
         } else throw DataNotFound()
     }

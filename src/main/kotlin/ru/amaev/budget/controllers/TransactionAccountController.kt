@@ -6,8 +6,10 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.*
 import ru.amaev.budget.data.Transaction
 import ru.amaev.budget.errors.DataNotFound
+import ru.amaev.budget.repositories.AccountRepository
 import ru.amaev.budget.repositories.TransactionRepository
-
+import ru.amaev.budget.repositories.UserRepository
+import ru.amaev.budget.rest.AddTransactionRequest
 
 @RestController
 @Api
@@ -16,6 +18,12 @@ class TransactionController {
 
     @Autowired
     lateinit var transactionRepository: TransactionRepository
+
+    @Autowired
+    lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var accountRepository: AccountRepository
 
     // TODO Disable after start
     @GetMapping
@@ -28,7 +36,14 @@ class TransactionController {
             ?: throw DataNotFound()
 
     @PutMapping("add")
-    fun addTransaction(@RequestBody transaction: Transaction) {
+    fun addTransaction(@RequestBody addTransactionRequest: AddTransactionRequest) {
+
+        val transaction = Transaction(
+                addTransactionRequest.amount,
+                accountRepository.findByIdOrNull(addTransactionRequest.accountId.toLong()) ?: throw DataNotFound(),
+                userRepository.findByIdOrNull(addTransactionRequest.userId.toLong()) ?: throw DataNotFound()
+        )
+
         transactionRepository.save(transaction)
     }
 
