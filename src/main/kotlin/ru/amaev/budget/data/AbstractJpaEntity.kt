@@ -15,13 +15,13 @@ abstract class AbstractJpaEntity<T> {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private var id: T? = null
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "idgen")
+    private var id: Long? = null
 
     @get:JvmName("isArchived")
     private var archived: Boolean = false
 
-    fun getId(): T? {
+    fun getId(): Long? {
         return id
     }
 

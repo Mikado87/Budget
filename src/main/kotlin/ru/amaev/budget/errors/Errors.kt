@@ -8,3 +8,6 @@ class DataNotFound : RuntimeException()
 
 @ResponseStatus(HttpStatus.CONFLICT)
 class AlreadyExist : RuntimeException()
+
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+class IncorrectRequest : RuntimeException()

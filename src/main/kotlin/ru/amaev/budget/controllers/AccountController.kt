@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*
 import ru.amaev.budget.data.Account
 import ru.amaev.budget.errors.DataNotFound
 import ru.amaev.budget.repositories.AccountRepository
+import ru.amaev.budget.repositories.CurrencyRepository
+import ru.amaev.budget.repositories.UserRepository
+import ru.amaev.budget.rest.AddAccountRequest
 
 
 @RestController
@@ -16,6 +19,12 @@ class AccountController {
 
     @Autowired
     lateinit var accountRepository: AccountRepository
+
+    @Autowired
+    lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var currencyRepository: CurrencyRepository
 
     // TODO Disable after start
     @GetMapping
@@ -28,7 +37,10 @@ class AccountController {
             ?: throw DataNotFound()
 
     @PutMapping("add")
-    fun addAccount(@RequestBody account: Account) {
+    fun addAccount(@RequestBody addAccountRequest: AddAccountRequest) {
+        val account = Account(
+                userRepository.findByIdOrNull(addAccountRequest.userId.toLong()) ?: throw DataNotFound()
+                , currencyRepository.findByIdOrNull(addAccountRequest.currencyId.toLong()) ?: throw DataNotFound())
         accountRepository.save(account)
     }
 
@@ -40,7 +52,7 @@ class AccountController {
     }
 
     @PatchMapping("update")
-    fun updateUserAccount(@RequestBody account: Account) {
+    fun updateAccount(@RequestBody account: Account) {
         if (account.getId() != null) {
             val accountFromDB = accountRepository.findByIdOrNull(account.getId()!!.toLong()) ?: throw DataNotFound()
             if (account.userAccount != null) accountFromDB.userAccount = account.userAccount
