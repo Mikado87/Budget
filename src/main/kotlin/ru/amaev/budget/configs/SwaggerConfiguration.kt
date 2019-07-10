@@ -1,4 +1,4 @@
-package ru.amaev.budget
+package ru.amaev.budget.configs
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

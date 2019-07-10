@@ -1,6 +1,7 @@
 package ru.amaev.budget.data
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.io.Serializable
 import java.math.BigDecimal
 import javax.persistence.*
@@ -37,13 +38,22 @@ data class Transaction @JsonCreator constructor(@Column(name = "amount") var amo
                                                 @JoinColumn(name = "user_account_id") var userAccount: User?)
     : AbstractJpaEntity<Long>(), Serializable
 
-@Entity(name = "usr")
+@Entity
+@Table(name = "usr")
 @SequenceGenerator(initialValue = 1, name = "idgen", sequenceName = "usr_seq", allocationSize = 1)
 data class User @JsonCreator constructor(@Column(name = "first_name") var firstName: String?,
                                          @Column(name = "last_name") var lastName: String?,
                                          @Column(name = "middle_name") var middleName: String?,
+                                         @JsonIgnore @Column(name = "password", nullable = false) var password: String?,
+                                         @Column(name = "login") var login: String?,
+                                         @Column(name = "email") var email: String?,
                                          @Column(name = "role") var role: Role?)
-    : AbstractJpaEntity<Long>(), Serializable
+    : AbstractJpaEntity<Long>(), Serializable {
+
+//    fun index(login: String, password: String): Boolean {
+//        return this.login.equals(login) && this.password.equals(password)
+//    }
+}
 
 enum class Role { USER, ADMIN }
 

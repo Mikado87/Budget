@@ -16,7 +16,7 @@ abstract class AbstractJpaEntity<T> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "idgen")
-    private var id: Long? = null
+    internal var id: Long? = null
 
     @get:JvmName("isArchived")
     private var archived: Boolean = false
@@ -27,6 +27,14 @@ abstract class AbstractJpaEntity<T> {
 
     fun setArchived() {
         archived = true
+    }
+
+    fun setArchived(archived: Boolean) {
+        this.archived = archived
+    }
+
+    fun getArchived(): Boolean {
+        return archived
     }
 
     override fun equals(other: Any?): Boolean {
